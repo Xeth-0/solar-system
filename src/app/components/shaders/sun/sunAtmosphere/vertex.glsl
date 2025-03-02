@@ -21,16 +21,12 @@ float fbm(vec4 p, int iters) {
 
 void main()
 {
-    // Outer edge Noise
-    // float displacement = snoise(vec4(position, uTime * 0.1)) * 0.8;
-    // displacement += snoise(vec4(position, uTime * 0.3)) * 0.1;
-    // // displacement = smoothstep(-0.3, 0.8, displacement) * 3000.0;
-
-    float displacement = fbm(vec4(position, uTime * 0.005), 8) * 0.15;
     
-    // displacement = 0.0;
+    float displacement = fbm(vec4(position, uTime * 0.3), 2) * 0.1;
+    displacement *= uv.x + uv.y;
+    displacement *= 0.3;
 
-    vec3 newPosition = position + position * displacement * 0.2;
+    vec3 newPosition = position + (position * displacement);
 
     // Final Position
     vec4 modelPosition = modelMatrix * vec4(newPosition, 1.0);

@@ -3,7 +3,6 @@ uniform float uTime;
 varying vec2 vUv;
 varying vec3 vNormal;
 varying vec3 vPosition;
-// varying float vDisplacement;
 
 #include ../includes/noise/simplex4D
 
@@ -14,8 +13,7 @@ void main() {
     
     // Create ribbon displacement using 4D noise
     float displacement = snoise(vec4(normal * 2.0, uTime * 0.1));
-    displacement += 0.5 * snoise(vec4(normal * 8.0, uTime * 0.3));
-    displacement = smoothstep(-0.3, 0.8, displacement) * 0.08;
+    displacement = smoothstep(-0.3, 0.8, displacement) * 0.03;
     
     // Offset position along normal
     vec3 newPosition = position + normal * displacement;
