@@ -3,6 +3,8 @@ import Experience from "./experience";
 import Sun from "./components/sun/sun";
 import Earth from "./components/earth/earth";
 import Environment from "./components/environment";
+import Mercury from "./components/mercury/mercury";
+import Venus from "./components/venus";
 // import Environment from "./components/environment";
 
 let instance = null;
@@ -30,9 +32,11 @@ export default class World {
   }
   
   setWorld(){
-    const earthSize = 2;
+    const earthSize = 1;
     
     this.sun = new Sun(earthSize);
+    this.mercury = new Mercury(earthSize);
+    this.venus = new Venus(earthSize);
     this.earth = new Earth(earthSize);
     this.environment = new Environment(earthSize);
     
@@ -44,8 +48,17 @@ export default class World {
     if (this.sun) {
       this.sun.update();
     }
+    if (this.mercury) {
+      this.mercury.update();
+    }
+    if (this.venus) {
+      this.venus.update();
+    }
     if (this.earth){
       this.earth.update();
+    }
+    if (this.environment) {
+      this.environment.update();
     }
   }
 

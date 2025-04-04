@@ -2,8 +2,8 @@ import * as THREE from "three";
 import constants from "../constants";
 import Experience from "../../experience";
 
-import vertexShader from "../shaders/earth/moon/vertex.glsl"
-import fragmentShader from "../shaders/earth/moon/fragment.glsl"
+import vertexShader from "../.shaders/earth/moon/vertex.glsl"
+import fragmentShader from "../.shaders/earth/moon/fragment.glsl"
 
 export default class Moon {
   constructor(earthSize){
@@ -104,8 +104,7 @@ export default class Moon {
   
   updatePosition(timeElapsed) {
     // Calculate the moon's orbital position
-    const timeScale = 2.0; // Increased time scale for more visible orbital motion
-    this.orbitalAngle = timeElapsed * this.orbitalSpeed * timeScale;
+    this.orbitalAngle = timeElapsed * this.orbitalSpeed; 
     
     // Calculate position (circular orbit for simplicity)
     const x = this.distance * Math.cos(this.orbitalAngle);

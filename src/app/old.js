@@ -5,18 +5,18 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import GUI from "lil-gui";
 import { Lensflare, LensflareElement } from "three/addons/objects/Lensflare.js";
 import Stats from "three/addons/libs/stats.module.js"
-import earthVertexShader from "./shaders/earth/vertex.glsl";
-import earthFragmentShader from "./shaders/earth/fragment.glsl";
-import atmosphereVertexShader from "./shaders/planetAtmosphere/vertex.glsl";
-import atmosphereFragmentShader from "./shaders/planetAtmosphere/fragment.glsl";
-import sunAtmosphereVertexShader from "./shaders/sun/sunAtmosphere/vertex.glsl";
-import sunAtmosphereFragmentShader from "./shaders/sun/sunAtmosphere/fragment.glsl";
-import sunVertexShader from "./shaders/sun/vertex.glsl";
-import sunFragmentShader from "./shaders/sun/fragment.glsl";
+import earthVertexShader from "./.shaders/earth/vertex.glsl";
+import earthFragmentShader from "./.shaders/earth/fragment.glsl";
+import atmosphereVertexShader from "./.shaders/planetAtmosphere/vertex.glsl";
+import atmosphereFragmentShader from "./.shaders/planetAtmosphere/fragment.glsl";
+import sunAtmosphereVertexShader from "./.shaders/sun/sunAtmosphere/vertex.glsl";
+import sunAtmosphereFragmentShader from "./.shaders/sun/sunAtmosphere/fragment.glsl";
+import sunVertexShader from "./.shaders/sun/vertex.glsl";
+import sunFragmentShader from "./.shaders/sun/fragment.glsl";
 
 
-import starsVertexShader from "./shaders/stars/vertex.glsl"
-import starsFragmentShader from "./shaders/stars/fragment.glsl"
+import starsVertexShader from "./.shaders/stars/vertex.glsl"
+import starsFragmentShader from "./.shaders/stars/fragment.glsl"
 
 const SUN_DISTANCE_MULTIPLIER = 117.50; // distance of the sun to the earth based on the size of the earth
 const SUN_SCALE_MULTIPLIER = 1.09; // size of the sun based on the size of the earth

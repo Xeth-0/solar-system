@@ -101,7 +101,7 @@ export default class Camera {
     
     // Initial positioning
     this.instance.position.copy(mesh.position);
-    this.instance.position.z -= 5;
+    this.instance.position.z -= mesh.scale.z;
     this.instance.position.x += 30;
     this.instance.lookAt(mesh.position);
     this.controls.target.copy(mesh.position);

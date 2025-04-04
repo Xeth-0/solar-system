@@ -2,11 +2,11 @@ import * as THREE from "three";
 import constants from "../constants";
 import Experience from "../../experience";
 
-import vertexShader from "../shaders/sun/vertex.glsl";
-import fragmentShader from "../shaders/sun/fragment.glsl";
+import vertexShader from "../.shaders/sun/vertex.glsl";
+import fragmentShader from "../.shaders/sun/fragment.glsl";
 
-import atmosphereFragmentShader from "../shaders/sun/sunAtmosphere/fragment.glsl";
-import atmosphereVertexShader from "../shaders/sun/sunAtmosphere/vertex.glsl";
+import atmosphereFragmentShader from "../.shaders/sun/sunAtmosphere/fragment.glsl";
+import atmosphereVertexShader from "../.shaders/sun/sunAtmosphere/vertex.glsl";
 
 let instance = null;
 
@@ -21,7 +21,6 @@ export default class Sun {
     this.time = this.experience.time;
 
     this.refSize = earthSize;
-    this.sunDistance = constants.SUN_DISTANCE_MULTIPLIER * this.refSize;
 
     this.setTextures();
     this.setMesh();
@@ -52,7 +51,7 @@ export default class Sun {
       transparent: true,
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
-      depthWrite: false,
+      // depthWrite: false,
       uniforms: {
         uSunColor: new THREE.Uniform(new THREE.Color(constants.sunColor)),
         uTime: new THREE.Uniform(0),
@@ -75,7 +74,7 @@ export default class Sun {
       },
     });
     const atmosphere = new THREE.Mesh(geometry, atmosphereMaterial);
-    atmosphere.scale.set(5, 5, 5);
+    atmosphere.scale.set(2, 2, 2);
     this.atmosphereMesh = atmosphere;
 
     // this.scene.add(this.sunMesh);
@@ -83,7 +82,7 @@ export default class Sun {
 
     this.instance = new THREE.Group();
     this.instance.add(this.sunMesh);
-    this.instance.add(this.atmosphereMesh);
+    // this.instance.add(this.atmosphereMesh);
 
     this.scene.add(this.instance);
   }

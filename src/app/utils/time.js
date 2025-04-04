@@ -12,7 +12,7 @@ export default class Time extends EventEmitter {
     this.current = this.start;
     this.delta = 16;
     this.elapsed = 0;
-    this.timeScale = 1.0; // Time scale factor for controlling simulation speed
+    this.timeScale = 0.3; // Time scale factor for controlling simulation speed
 
     window.requestAnimationFrame(() => {
       this.tick();

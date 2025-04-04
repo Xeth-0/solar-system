@@ -32,6 +32,16 @@ export default [
   {
     name: "starsTexture",
     type: "texture",
-    path: "/8k_stars.jpg"
+    path: "/stars/8k_stars.jpg"
+  },
+  {
+    name: "mercuryTexture",
+    type: "texture",
+    path: "/mercury/2k_mercury.jpg"
+  },
+  {
+    name: "venusTexture",
+    type: "texture",
+    path: "/venus/2k_venus_surface.jpg"
   }
 ];
