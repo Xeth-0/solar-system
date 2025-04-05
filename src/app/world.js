@@ -5,7 +5,11 @@ import Earth from "./components/earth/earth";
 import Environment from "./components/environment";
 import Mercury from "./components/mercury/mercury";
 import Venus from "./components/venus";
-// import Environment from "./components/environment";
+import Mars from "./components/mars/mars";
+import Jupiter from "./components/jupiter/jupiter";
+import Saturn from "./components/saturn/saturn";
+import Neptune from "./components/neptune/neptune";
+import Uranus from "./components/uranus/uranus";
 
 let instance = null;
 
@@ -38,6 +42,11 @@ export default class World {
     this.mercury = new Mercury(earthRadius);
     this.venus = new Venus(earthRadius);
     this.earth = new Earth(earthRadius);
+    this.mars = new Mars(earthRadius);
+    this.jupiter = new Jupiter(earthRadius);
+    this.saturn = new Saturn(earthRadius);
+    this.uranus = new Uranus(earthRadius);
+    this.neptune = new Neptune(earthRadius);
     this.environment = new Environment(earthRadius);
     
     // Set initial camera position
@@ -56,6 +65,21 @@ export default class World {
     }
     if (this.earth){
       this.earth.update();
+    }
+    if (this.mars){
+      this.mars.update()
+    }
+    if (this.jupiter){
+      this.jupiter.update()
+    }
+    if (this.saturn){
+      this.saturn.update()
+    }
+    if (this.uranus){
+      this.uranus.update()
+    }
+    if (this.neptune){
+      this.neptune.update()
     }
     if (this.environment) {
       this.environment.update();
