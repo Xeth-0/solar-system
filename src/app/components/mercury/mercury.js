@@ -5,18 +5,20 @@ import Experience from "../../experience";
 import vertexShader from "../.shaders/planet/vertex.glsl";
 import fragmentShader from "../.shaders/planet/fragment.glsl";
 
+import { createOrbitalPath, getOrbitPosition } from "../orbits";
+
 export default class Mercury {
   /**
-   * @param {number} earthSize
+   * @param {number} earthRadius
    */
-  constructor(earthSize) {
+  constructor(earthRadius) {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
     this.time = this.experience.time;
 
-    this.radius = earthSize * constants.MERCURY_SCALE_MULTIPLIER;
-    this.distanceFromSun = earthSize * constants.MERCURY_DISTANCE_MULTIPLIER;
+    this.radius = earthRadius * constants.MERCURY_SCALE_MULTIPLIER;
+    this.distanceFromSun = earthRadius * constants.MERCURY_DISTANCE_MULTIPLIER;
 
     // Orbital parameters
     this.orbitalEccentricity = constants.MERCURY_ORBITAL_ECCENTRICITY;
@@ -61,56 +63,27 @@ export default class Mercury {
     this.instance.scale.set(this.radius, this.radius, this.radius);
     this.scene.add(mesh);
 
-    this.orbit = this.createOrbitalPath();
+    this.orbit = createOrbitalPath(
+      this.semiMajorAxis,
+      this.semiMinorAxis,
+      this.orbitalEccentricity
+    );
     this.scene.add(this.orbit);
   }
 
-  createOrbitalPath() {
-    const orbitCurve = new THREE.EllipseCurve(
-      -this.semiMajorAxis * this.orbitalEccentricity,
-      0,
-      this.semiMajorAxis,
-      this.semiMinorAxis,
-      0,
-      2 * Math.PI,
-      false,
-      0
-    );
-
-    const points = orbitCurve.getPoints(100);
-    const orbitGeometry = new THREE.BufferGeometry().setFromPoints(points);
-
-    const positions = new Float32Array(points.length * 3);
-    for (let i = 0; i < points.length; i++) {
-      positions[i * 3] = points[i].x;
-      positions[i * 3 + 1] = 0;
-      positions[i * 3 + 2] = points[i].y;
-    }
-
-    orbitGeometry.setAttribute(
-      "position",
-      new THREE.BufferAttribute(positions, 3)
-    );
-    const orbitMaterial = new THREE.LineBasicMaterial({
-      color: "#444444",
-      transparent: true,
-      opacity: 0.3,
-    });
-
-    const orbitLine = new THREE.Line(orbitGeometry, orbitMaterial);
-    return orbitLine;
-  }
-
   update() {
-    this.instance.rotation.y = this.time.elapsed * 5; // Mercury rotates faster than it orbits
-    const orbitalAngle = this.time.elapsed * this.orbitalSpeed;
-    const x = this.semiMajorAxis * Math.cos(orbitalAngle);
-    const z = this.semiMinorAxis * Math.sin(orbitalAngle);
+    this.instance.rotation.y = this.time.elapsed * 5; 
+    
+    const [x, z] = getOrbitPosition(
+      this.time.elapsed,
+      this.orbitalPeriod,
+      this.orbitalEccentricity,
+      this.semiMajorAxis
+    );
 
-    // Update the new position
     this.instance.position.set(x, 0, z);
 
-    const sunDirection = new THREE.Vector3(0,0,0)
+    const sunDirection = new THREE.Vector3(0, 0, 0)
       .sub(this.instance.position)
       .normalize();
 

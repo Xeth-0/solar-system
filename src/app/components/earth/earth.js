@@ -8,25 +8,26 @@ import fragmentShader from "../.shaders/earth/fragment.glsl";
 import atmosphereFragmentShader from "../.shaders/planetAtmosphere/fragment.glsl";
 import atmosphereVertexShader from "../.shaders/planetAtmosphere/vertex.glsl";
 import Moon from "./moon";
+import { createOrbitalPath, getOrbitPosition } from "../orbits";
 
 export default class Earth {
   /**
-   * @param {number} earthSize - The base size used to calculate the Sun's scale and distance
+   * @param {number} earthRadius - The base size used to calculate the Sun's scale and distance
    */
-  constructor(earthSize) {
+  constructor(earthRadius) {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
     this.time = this.experience.time;
 
-    this.radius = earthSize * constants.EARTH_SCALE_MULTIPLIER;
+    this.radius = earthRadius * constants.EARTH_SCALE_MULTIPLIER;
     this.sunDistance = constants.EARTH_DISTANCE_MULTIPLIER * this.radius;
 
     // Orbital parameters
-    this.orbitalPeriod = constants.EARTH_ORBITAL_PERIOD; // Earth's orbital period in days
-    this.orbitalSpeed = (2 * Math.PI) / this.orbitalPeriod; // Angular speed in radians per day
-    this.orbitalInclination = THREE.MathUtils.degToRad(23.5); // Earth's axial tilt in radians
-    this.orbitalEccentricity = constants.EARTH_ORBITAL_ECCENTRICITY; // Earth's orbital eccentricity
+    this.orbitalPeriod = constants.EARTH_ORBITAL_PERIOD; 
+    this.orbitalSpeed = (2 * Math.PI) / this.orbitalPeriod; 
+    this.orbitalInclination = THREE.MathUtils.degToRad(23.5);
+    this.orbitalEccentricity = constants.EARTH_ORBITAL_ECCENTRICITY; 
 
     this.semiMajorAxis = this.sunDistance;
     this.semiMinorAxis =
@@ -63,7 +64,34 @@ export default class Earth {
   }
 
   setMesh() {
+    // Defining the geometry here because the planet and the atmosphere have the same geometry.
     const geometry = new THREE.SphereGeometry(this.radius, 64, 64);
+
+    this.earth = this.createEarth(geometry);
+    this.atmosphere = this.createAtmosphere(geometry);
+    this.atmosphere.scale.set(1.04, 1.04, 1.04);
+    this.moon = this.createMoon();
+
+    this.instance = new THREE.Group();
+    this.instance.add(this.earth);
+    this.instance.add(this.atmosphere);
+
+    this.orbitLine = createOrbitalPath(
+      this.semiMajorAxis,
+      this.semiMinorAxis,
+      this.orbitalEccentricity
+    );
+
+    this.scene.add(this.orbitLine);
+    this.scene.add(this.instance);
+
+    // Add a reference to the Earth in the Moon for easier access
+    if (this.moon) {
+      this.moon.earth = this;
+    }
+  }
+
+  createEarth(geometry) {
     const material = new THREE.ShaderMaterial({
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
@@ -85,8 +113,10 @@ export default class Earth {
     });
 
     const earth = new THREE.Mesh(geometry, material);
-    this.earth = earth;
+    return earth;
+  }
 
+  createAtmosphere(geometry) {
     const atmosphereMaterial = new THREE.ShaderMaterial({
       side: THREE.BackSide,
       transparent: true,
@@ -104,90 +134,31 @@ export default class Earth {
     });
 
     const atmosphere = new THREE.Mesh(geometry, atmosphereMaterial);
-    atmosphere.scale.set(1.04, 1.04, 1.04);
-    this.atmosphere = atmosphere;
-
-    // Moon
-    const moon = new Moon(this.radius);
-    this.moon = moon;
-
-    this.instance = new THREE.Group();
-    this.instance.add(earth);
-    this.instance.add(atmosphere);
-
-    // Create an orbital path visualization
-    this.orbitLine = this.createOrbitalPath();
-    this.scene.add(this.orbitLine);
-
-    this.scene.add(this.instance);
-
-    // Add a reference to the Earth in the Moon for easier access
-    if (this.moon) {
-      this.moon.earth = this;
-    }
+    return atmosphere;
   }
 
-  createOrbitalPath() {
-    // Create a visualization of the orbital path
-    const orbitCurve = new THREE.EllipseCurve(
-      -this.semiMajorAxis * this.orbitalEccentricity,
-      0,
-      this.semiMajorAxis, // xRadius
-      this.semiMinorAxis, // zRadius
-      0, // start angle
-      2 * Math.PI, // end angle
-      false, // clockwise
-      0 // rotation
-    );
-
-    const points = orbitCurve.getPoints(100);
-    const orbitGeometry = new THREE.BufferGeometry().setFromPoints(points);
-
-    const positions = new Float32Array(points.length * 3);
-    for (let i = 0; i < points.length; i++) {
-      positions[i * 3] = points[i].x;
-      positions[i * 3 + 1] = 0;
-      positions[i * 3 + 2] = points[i].y;
-    }
-
-    orbitGeometry.setAttribute(
-      "position",
-      new THREE.BufferAttribute(positions, 3)
-    );
-
-    const orbitMaterial = new THREE.LineBasicMaterial({
-      color: "#444444",
-      transparent: true,
-      opacity: 0.3,
-    });
-
-    const orbitLine = new THREE.Line(orbitGeometry, orbitMaterial);
-    return orbitLine;
+  createMoon() {
+    return new Moon(this.radius);
   }
 
   update() {
-    // Update the rotation
-    this.earth.rotation.y = this.time.elapsed * 5; // Earth rotates faster than it orbits
+    this.earth.rotation.y = this.time.elapsed * 5;
 
-    // Update the position
-    const orbitalAngle = this.time.elapsed * this.orbitalSpeed;
-    // Calculate position using Kepler's laws (simplified elliptical orbit)
-    // For an elliptical orbit, we use the parametric equation of an ellipse
-
-    const x = this.semiMajorAxis * Math.cos(orbitalAngle);
-    const z = this.semiMinorAxis * Math.sin(orbitalAngle);
-    
+    const [x, z] = getOrbitPosition(
+      this.time.elapsed,
+      this.orbitalPeriod,
+      this.orbitalEccentricity,
+      this.semiMajorAxis,
+      this.semiMinorAxis
+    );
     this.instance.position.set(x, 0, z);
 
-    // Calculate the direction to the Sun (at origin) for shading
     const sunDirection = new THREE.Vector3(0, 0, 0)
       .sub(this.instance.position)
       .normalize();
-
     this.earth.material.uniforms.uSunDirection.value = sunDirection;
     this.atmosphere.material.uniforms.uSunDirection.value = sunDirection;
 
-    // Update the Moon's position and sun direction
     if (this.moon) {
       this.moon.update(this.instance.position, sunDirection);
     }

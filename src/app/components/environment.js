@@ -5,12 +5,12 @@ import vertexShader from "./.shaders/stars/vertex.glsl";
 import fragmentShader from "./.shaders/stars/fragment.glsl";
 
 export default class Environment {
-  constructor(earthSize) {
+  constructor(earthRadius) {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
     this.time = this.experience.time;
-    this.earthRadius = earthSize;
+    this.earthRadius = earthRadius;
 
     this.setTextures();
     this.setEnvironment();
@@ -29,7 +29,7 @@ export default class Environment {
 
   setEnvironment() {
     // large sphere with the texture applied to it. this will make it more realistic
-    const geometry = new THREE.SphereGeometry(this.earthRadius * 1000, 64, 64);
+    const geometry = new THREE.SphereGeometry(this.earthRadius * 100000, 64, 64);
     // const material = new THREE.MeshBasicMaterial({
     //   map: this.textures.starsTexture,
     //   side: THREE.BackSide,

@@ -22,10 +22,22 @@ export default class Resources extends EventEmitter {
   }
 
   setLoaders() {
+    const loadingManager = new THREE.LoadingManager();
+    loadingManager.onProgress = (item, loaded, total) => {
+      console.log(
+        `Loaded ${loaded} of ${total} resources for ${item}`
+      );
+    };
+    loadingManager.onError = (url) => {
+      console.warn(`An error happened loading: ${url}`);
+    };
+
     this.loaders = {};
-    this.loaders.gltf = new GLTFLoader();
-    this.loaders.textureLoader = new THREE.TextureLoader();
+    // this.loaders.gltf = new GLTFLoader();
+    this.loaders.textureLoader = new THREE.TextureLoader(loadingManager);
     this.loaders.cubeTextureLoader = new THREE.CubeTextureLoader();
+  
+    
   }
 
   startLoading() {

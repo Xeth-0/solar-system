@@ -109,8 +109,8 @@ earthParameters.atmosphereTwilightColor = "#ff6600";
 earthParameters.sunColor = "#fc9601"
 
 // Mesh
-const earthSize = 2;
-const earthGeometry = new THREE.SphereGeometry(earthSize, 64, 64);
+const earthRadius = 2;
+const earthGeometry = new THREE.SphereGeometry(earthRadius, 64, 64);
 const earthMaterial = new THREE.ShaderMaterial({
   vertexShader: earthVertexShader,
   fragmentShader: earthFragmentShader,
@@ -153,10 +153,10 @@ scene.add(earthAtmosphere);
 
 const sunSpherical = new THREE.Spherical(1, Math.PI * 0.5, 0);
 const sunDirection = new THREE.Vector3(0,0,1);
-let sunDistance = earthSize * SUN_DISTANCE_MULTIPLIER;
+let sunDistance = earthRadius * SUN_DISTANCE_MULTIPLIER;
 // sunDistance = 0;
 
-const sunGeometry = new THREE.SphereGeometry(earthSize * SUN_SCALE_MULTIPLIER, 100, 100);
+const sunGeometry = new THREE.SphereGeometry(earthRadius * SUN_SCALE_MULTIPLIER, 100, 100);
 const sunMaterial = new THREE.ShaderMaterial({
   transparent: true,
   vertexShader: sunVertexShader,

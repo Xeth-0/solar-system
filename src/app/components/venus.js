@@ -5,18 +5,20 @@ import Experience from "../experience";
 import vertexShader from "./.shaders/planet/vertex.glsl";
 import fragmentShader from "./.shaders/planet/fragment.glsl";
 
+import { createOrbitalPath, getOrbitPosition } from "./orbits";
+
 export default class Venus {
   /**
-   * @param {number} earthSize
+   * @param {number} earthRadius
    */
-  constructor(earthSize) {
+  constructor(earthRadius) {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
     this.time = this.experience.time;
 
-    this.radius = earthSize * constants.VENUS_SCALE_MULTIPLIER;
-    this.distanceFromSun = earthSize * constants.VENUS_DISTANCE_MULTIPLIER;
+    this.radius = earthRadius * constants.VENUS_SCALE_MULTIPLIER;
+    this.distanceFromSun = earthRadius * constants.VENUS_DISTANCE_MULTIPLIER;
 
     // Orbital parameters
     this.orbitalEccentricity = constants.VENUS_ORBITAL_ECCENTRICITY;
@@ -54,62 +56,29 @@ export default class Venus {
       },
     });
     const geometry = new THREE.SphereGeometry(1, 64, 64);
-    // const material = new THREE.MeshBasicMaterial({
-    //   map: this.textures.venusTexture,
-    // });
+    const mesh = new THREE.Mesh(geometry, material);
 
-    const venus = new THREE.Mesh(geometry, material);
-    this.instance = venus;
+    this.instance = mesh;
     this.instance.scale.set(this.radius, this.radius, this.radius);
     this.scene.add(this.instance);
 
-    this.orbitLine = this.createOrbitalPath();
+    this.orbitLine = createOrbitalPath(
+      this.semiMajorAxis,
+      this.semiMinorAxis,
+      this.orbitalEccentricity
+    );
     this.scene.add(this.orbitLine);
   }
 
-  createOrbitalPath() {
-    const orbitCurve = new THREE.EllipseCurve(
-      -this.semiMajorAxis * this.orbitalEccentricity,
-      0,
-      this.semiMajorAxis, // xRadius
-      this.semiMinorAxis, // zRadius
-      0, // start angle
-      2 * Math.PI, // end angle
-      false, // clockwise
-      0 // rotation
-    );
-
-    const points = orbitCurve.getPoints(100);
-    const orbitGeometry = new THREE.BufferGeometry().setFromPoints(points);
-
-    const positions = new Float32Array(points.length * 3);
-    for (let i = 0; i < points.length; i++) {
-      positions[i * 3] = points[i].x;
-      positions[i * 3 + 1] = 0;
-      positions[i * 3 + 2] = points[i].y;
-    }
-
-    orbitGeometry.setAttribute(
-      "position",
-      new THREE.BufferAttribute(positions, 3)
-    );
-
-    const orbitMaterial = new THREE.LineBasicMaterial({
-      color: "#444444",
-      transparent: true,
-      opacity: 0.3,
-    });
-
-    const orbitLine = new THREE.Line(orbitGeometry, orbitMaterial);
-    return orbitLine;
-  }
-
   update() {
-    this.instance.rotation.y = this.time.elapsed * 5; // Venus rotates faster than it orbits
-    const orbitalAngle = this.time.elapsed * this.orbitalSpeed;
-    const x = this.semiMajorAxis * Math.cos(orbitalAngle);
-    const z = this.semiMinorAxis * Math.sin(orbitalAngle);
+    this.instance.rotation.y = this.time.elapsed * 5; 
 
+    const [x, z] = getOrbitPosition(
+      this.time.elapsed,
+      this.orbitalPeriod,
+      this.orbitalEccentricity,
+      this.semiMajorAxis
+    );
     this.instance.position.set(x, 0, z);
 
     const sunDirection = new THREE.Vector3(0, 0, 0)

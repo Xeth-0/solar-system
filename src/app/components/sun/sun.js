@@ -12,15 +12,15 @@ let instance = null;
 
 export default class Sun {
   /**
-   * @param {number} earthSize - The base size used to calculate the Sun's scale and distance
+   * @param {number} earthRadius - The base size used to calculate the Sun's scale and distance
    */
-  constructor(earthSize) {
+  constructor(earthRadius) {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
     this.time = this.experience.time;
 
-    this.refSize = earthSize;
+    this.radius = earthRadius * constants.SUN_SCALE_MULTIPLIER;
 
     this.setTextures();
     this.setMesh();
@@ -43,9 +43,9 @@ export default class Sun {
     this.sunDirection = new THREE.Vector3(0, 0, 1);
 
     const geometry = new THREE.SphereGeometry(
-      this.refSize * constants.SUN_SCALE_MULTIPLIER,
-      100,
-      100
+      this.radius,
+      64,
+      64
     );
     const material = new THREE.ShaderMaterial({
       transparent: true,
@@ -60,6 +60,7 @@ export default class Sun {
     });
 
     const sun = new THREE.Mesh(geometry, material);
+    // sun.scale.set(this.radius, this.radius, this.radius);
     this.sunMesh = sun;
 
     const atmosphereMaterial = new THREE.ShaderMaterial({

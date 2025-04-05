@@ -21,7 +21,7 @@ export default class World {
     this.resources = this.experience.resources;
     
     // Camera focus options
-    this.focusTarget = 'sun'; // Default focus target
+    this.focusTarget = 'earth'; // Default focus target
     
     // Build the world when the resources(textures, models, ...) are ready
     this.resources.on("ready", () => {
@@ -32,13 +32,13 @@ export default class World {
   }
   
   setWorld(){
-    const earthSize = 1;
+    const earthRadius = 1;
     
-    this.sun = new Sun(earthSize);
-    this.mercury = new Mercury(earthSize);
-    this.venus = new Venus(earthSize);
-    this.earth = new Earth(earthSize);
-    this.environment = new Environment(earthSize);
+    this.sun = new Sun(earthRadius);
+    this.mercury = new Mercury(earthRadius);
+    this.venus = new Venus(earthRadius);
+    this.earth = new Earth(earthRadius);
+    this.environment = new Environment(earthRadius);
     
     // Set initial camera position
     this.updateCameraFocus(this.focusTarget);

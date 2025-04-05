@@ -52,7 +52,7 @@ export default class Experience {
       const timeFolder = this.debug.ui.addFolder('Time Settings');
       
       timeFolder
-        .add(this.time, 'timeScale', 0.1, 10.0, 0.1)
+        .add(this.time, 'timeScale', 0.0, 10.0, 0.1)
         .name('Time Scale')
         .onChange(() => {
           console.log(`Time scale set to ${this.time.timeScale}`);
