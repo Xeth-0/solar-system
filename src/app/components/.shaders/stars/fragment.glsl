@@ -12,7 +12,7 @@ void main() {
   vec4 color = texture(uStarsTexture, uv);
 
   // Add some twinkling to the stars (if there are stars at that position)
-  float noise = abs(sin(uTime) + snoise(vec4(uv * 10.0, 1.0, uTime * 0.1)));
+  float noise = abs(sin(uTime) + snoise(vec4(uv * 10.0, 1.0, uTime * 0.8)));
   
   color.rgb = color.rgb * (color.rgb + vec3(noise));
 
