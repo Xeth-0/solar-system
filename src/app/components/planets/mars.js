@@ -5,9 +5,9 @@ import Experience from "../../experience";
 import vertexShader from "../.shaders/planet/vertex.glsl";
 import fragmentShader from "../.shaders/planet/fragment.glsl";
 
-import { createOrbitalPath, getOrbitPosition } from "../orbits";
+import { createOrbitalPath, getOrbitPosition } from "./orbits";
 
-export default class Saturn {
+export default class Mars {
   /**
    * @param {number} earthRadius
    */
@@ -17,12 +17,12 @@ export default class Saturn {
     this.resources = this.experience.resources;
     this.time = this.experience.time;
 
-    this.radius = earthRadius * constants.SATURN_SCALE_MULTIPLIER;
-    this.distanceFromSun = earthRadius * constants.SATURN_DISTANCE_MULTIPLIER;
+    this.radius = earthRadius * constants.MARS_SCALE_MULTIPLIER;
+    this.distanceFromSun = earthRadius * constants.MARS_DISTANCE_MULTIPLIER;
 
     // Orbital parameters
-    this.orbitalEccentricity = constants.SATURN_ORBITAL_ECCENTRICITY;
-    this.orbitalPeriod = constants.SATURN_ORBITAL_PERIOD;
+    this.orbitalEccentricity = constants.MARS_ORBITAL_ECCENTRICITY;
+    this.orbitalPeriod = constants.MARS_ORBITAL_PERIOD;
     this.orbitalSpeed = (2 * Math.PI) / this.orbitalPeriod;
     this.orbitalInclination = THREE.MathUtils.degToRad(7.0);
 
@@ -37,14 +37,14 @@ export default class Saturn {
 
   setTextures() {
     this.textures = {
-      saturnTexture: this.resources.items.saturnTexture,
+      marsTexture: this.resources.items.marsTexture,
     };
-    if (!this.textures.saturnTexture) {
-      console.warn("Missing Texture: Saturn");
+    if (!this.textures.marsTexture) {
+      console.warn("Missing Texture: Mars");
     }
 
-    this.textures.saturnTexture.anisotropy = 8;
-    this.textures.saturnTexture.colorSpace = THREE.SRGBColorSpace;
+    this.textures.marsTexture.anisotropy = 8;
+    this.textures.marsTexture.colorSpace = THREE.SRGBColorSpace;
   }
 
   setMesh() {
@@ -52,7 +52,7 @@ export default class Saturn {
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
       uniforms: {
-        uTexture: new THREE.Uniform(this.textures.saturnTexture),
+        uTexture: new THREE.Uniform(this.textures.marsTexture),
         uSunDirection: new THREE.Uniform(new THREE.Vector3(0, 0, 1)),
       },
     });
@@ -89,4 +89,4 @@ export default class Saturn {
 
     this.instance.material.uniforms.uSunDirection.value = sunDirection;
   }
-}   
+}

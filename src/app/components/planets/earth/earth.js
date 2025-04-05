@@ -1,12 +1,13 @@
 import * as THREE from "three";
-import constants from "../constants";
-import Experience from "../../experience";
+import constants from "../../constants";
+import Experience from "../../../experience";
 
-import vertexShader from "../.shaders/earth/vertex.glsl";
-import fragmentShader from "../.shaders/earth/fragment.glsl";
+import vertexShader from "../../.shaders/earth/vertex.glsl";
+import fragmentShader from "../../.shaders/earth/fragment.glsl";
 
-import atmosphereFragmentShader from "../.shaders/planetAtmosphere/fragment.glsl";
-import atmosphereVertexShader from "../.shaders/planetAtmosphere/vertex.glsl";
+import atmosphereVertexShader from "../../.shaders/earth/atmosphere/vertex.glsl";
+import atmosphereFragmentShader from "../../.shaders/earth/atmosphere/fragment.glsl";
+
 import Moon from "./moon";
 import { createOrbitalPath, getOrbitPosition } from "../orbits";
 

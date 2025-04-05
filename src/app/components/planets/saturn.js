@@ -5,9 +5,9 @@ import Experience from "../../experience";
 import vertexShader from "../.shaders/planet/vertex.glsl";
 import fragmentShader from "../.shaders/planet/fragment.glsl";
 
-import { createOrbitalPath, getOrbitPosition } from "../orbits";
+import { createOrbitalPath, getOrbitPosition } from "./orbits";
 
-export default class Neptune {
+export default class Saturn {
   /**
    * @param {number} earthRadius
    */
@@ -17,12 +17,12 @@ export default class Neptune {
     this.resources = this.experience.resources;
     this.time = this.experience.time;
 
-    this.radius = earthRadius * constants.NEPTUNE_SCALE_MULTIPLIER;
-    this.distanceFromSun = earthRadius * constants.NEPTUNE_DISTANCE_MULTIPLIER;
+    this.radius = earthRadius * constants.SATURN_SCALE_MULTIPLIER;
+    this.distanceFromSun = earthRadius * constants.SATURN_DISTANCE_MULTIPLIER;
 
     // Orbital parameters
-    this.orbitalEccentricity = constants.NEPTUNE_ORBITAL_ECCENTRICITY;
-    this.orbitalPeriod = constants.NEPTUNE_ORBITAL_PERIOD;
+    this.orbitalEccentricity = constants.SATURN_ORBITAL_ECCENTRICITY;
+    this.orbitalPeriod = constants.SATURN_ORBITAL_PERIOD;
     this.orbitalSpeed = (2 * Math.PI) / this.orbitalPeriod;
     this.orbitalInclination = THREE.MathUtils.degToRad(7.0);
 
@@ -37,14 +37,14 @@ export default class Neptune {
 
   setTextures() {
     this.textures = {
-      neptuneTexture: this.resources.items.neptuneTexture,
+      saturnTexture: this.resources.items.saturnTexture,
     };
-    if (!this.textures.neptuneTexture) {
-      console.warn("Missing Texture: Neptune");
+    if (!this.textures.saturnTexture) {
+      console.warn("Missing Texture: Saturn");
     }
 
-    this.textures.neptuneTexture.anisotropy = 8;
-    this.textures.neptuneTexture.colorSpace = THREE.SRGBColorSpace;
+    this.textures.saturnTexture.anisotropy = 8;
+    this.textures.saturnTexture.colorSpace = THREE.SRGBColorSpace;
   }
 
   setMesh() {
@@ -52,7 +52,7 @@ export default class Neptune {
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
       uniforms: {
-        uTexture: new THREE.Uniform(this.textures.neptuneTexture),
+        uTexture: new THREE.Uniform(this.textures.saturnTexture),
         uSunDirection: new THREE.Uniform(new THREE.Vector3(0, 0, 1)),
       },
     });
@@ -89,4 +89,4 @@ export default class Neptune {
 
     this.instance.material.uniforms.uSunDirection.value = sunDirection;
   }
-}
+}   

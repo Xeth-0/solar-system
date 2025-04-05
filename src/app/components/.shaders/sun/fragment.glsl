@@ -6,7 +6,7 @@ varying vec2 vUv;
 varying vec3 vNormal;
 varying vec3 vPosition;
 
-#include ../includes/noise/simplex4D
+#include ../.includes/noise/simplex4D
 
 // fractal brownian motion - creates layers of snoise
 float fbm(vec4 p, int iters) {

@@ -1,9 +1,9 @@
 import * as THREE from "three";
-import constants from "../constants";
-import Experience from "../../experience";
+import constants from "../../constants";
+import Experience from "../../../experience";
 
-import vertexShader from "../.shaders/earth/moon/vertex.glsl";
-import fragmentShader from "../.shaders/earth/moon/fragment.glsl";
+import vertexShader from "../../.shaders/earth/moon/vertex.glsl";
+import fragmentShader from "../../.shaders/earth/moon/fragment.glsl";
 import { createOrbitalPath, getOrbitPosition } from "../orbits";
 
 export default class Moon {

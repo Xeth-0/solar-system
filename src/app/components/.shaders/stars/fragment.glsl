@@ -3,7 +3,7 @@ uniform float uTime;
 
 varying vec2 vUv;
 
-#include ../includes/noise/simplex4D
+#include ../.includes/noise/simplex4D
 
 void main() {
   vec2 uv = vUv;

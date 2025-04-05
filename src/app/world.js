@@ -1,14 +1,14 @@
 import Experience from "./experience";
 import Sun from "./components/sun/sun";
-import Earth from "./components/earth/earth";
+import Earth from "./components/planets/earth/earth";
 import Environment from "./components/environment";
-import Mercury from "./components/mercury/mercury";
-import Venus from "./components/venus";
-import Mars from "./components/mars/mars";
-import Jupiter from "./components/jupiter/jupiter";
-import Saturn from "./components/saturn/saturn";
-import Neptune from "./components/neptune/neptune";
-import Uranus from "./components/uranus/uranus";
+import Mercury from "./components/planets/mercury";
+import Venus from "./components/planets/venus";
+import Mars from "./components/planets/mars";
+import Jupiter from "./components/planets/jupiter";
+import Saturn from "./components/planets/saturn";
+import Neptune from "./components/planets/neptune";
+import Uranus from "./components/planets/uranus";
 
 let instance = null;
 
@@ -38,6 +38,7 @@ export default class World {
     const earthRadius = 1;
     
     this.sun = new Sun(earthRadius);
+
     this.mercury = new Mercury(earthRadius);
     this.venus = new Venus(earthRadius);
     this.earth = new Earth(earthRadius);

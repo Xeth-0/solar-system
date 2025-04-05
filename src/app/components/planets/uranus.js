@@ -1,13 +1,13 @@
 import * as THREE from "three";
-import constants from "./constants";
-import Experience from "../experience";
+import constants from "../constants";
+import Experience from "../../experience";
 
-import vertexShader from "./.shaders/planet/vertex.glsl";
-import fragmentShader from "./.shaders/planet/fragment.glsl";
+import vertexShader from "../.shaders/planet/vertex.glsl";
+import fragmentShader from "../.shaders/planet/fragment.glsl";
 
 import { createOrbitalPath, getOrbitPosition } from "./orbits";
 
-export default class Venus {
+export default class Uranus {
   /**
    * @param {number} earthRadius
    */
@@ -17,14 +17,14 @@ export default class Venus {
     this.resources = this.experience.resources;
     this.time = this.experience.time;
 
-    this.radius = earthRadius * constants.VENUS_SCALE_MULTIPLIER;
-    this.distanceFromSun = earthRadius * constants.VENUS_DISTANCE_MULTIPLIER;
+    this.radius = earthRadius * constants.URANUS_SCALE_MULTIPLIER;
+    this.distanceFromSun = earthRadius * constants.URANUS_DISTANCE_MULTIPLIER;
 
     // Orbital parameters
-    this.orbitalEccentricity = constants.VENUS_ORBITAL_ECCENTRICITY;
-    this.orbitalPeriod = constants.VENUS_ORBITAL_PERIOD;
+    this.orbitalEccentricity = constants.URANUS_ORBITAL_ECCENTRICITY;
+    this.orbitalPeriod = constants.URANUS_ORBITAL_PERIOD;
     this.orbitalSpeed = (2 * Math.PI) / this.orbitalPeriod;
-    this.orbitalInclination = THREE.MathUtils.degToRad(7.25);
+    this.orbitalInclination = THREE.MathUtils.degToRad(7.0);
 
     this.semiMajorAxis = this.distanceFromSun;
     this.semiMinorAxis =
@@ -37,13 +37,14 @@ export default class Venus {
 
   setTextures() {
     this.textures = {
-      venusTexture: this.resources.items.venusTexture,
+      uranusTexture: this.resources.items.uranusTexture,
     };
-    if (!this.textures.venusTexture) {
-      console.warn("Missing Texture: Venus");
+    if (!this.textures.uranusTexture) {
+      console.warn("Missing Texture: Uranus");
     }
 
-    this.textures.venusTexture.colorSpace = THREE.SRGBColorSpace;
+    this.textures.uranusTexture.anisotropy = 8;
+    this.textures.uranusTexture.colorSpace = THREE.SRGBColorSpace;
   }
 
   setMesh() {
@@ -51,7 +52,7 @@ export default class Venus {
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
       uniforms: {
-        uTexture: new THREE.Uniform(this.textures.venusTexture),
+        uTexture: new THREE.Uniform(this.textures.uranusTexture),
         uSunDirection: new THREE.Uniform(new THREE.Vector3(0, 0, 1)),
       },
     });
@@ -60,18 +61,18 @@ export default class Venus {
 
     this.instance = mesh;
     this.instance.scale.set(this.radius, this.radius, this.radius);
-    this.scene.add(this.instance);
+    this.scene.add(mesh);
 
-    this.orbitLine = createOrbitalPath(
+    this.orbit = createOrbitalPath(
       this.semiMajorAxis,
       this.semiMinorAxis,
       this.orbitalEccentricity
     );
-    this.scene.add(this.orbitLine);
+    this.scene.add(this.orbit);
   }
 
   update() {
-    this.instance.rotation.y = this.time.elapsed * 5; 
+    this.instance.rotation.y = this.time.elapsed * 5;
 
     const [x, z] = getOrbitPosition(
       this.time.elapsed,
@@ -79,6 +80,7 @@ export default class Venus {
       this.orbitalEccentricity,
       this.semiMajorAxis
     );
+
     this.instance.position.set(x, 0, z);
 
     const sunDirection = new THREE.Vector3(0, 0, 0)

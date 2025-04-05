@@ -5,9 +5,9 @@ import Experience from "../../experience";
 import vertexShader from "../.shaders/planet/vertex.glsl";
 import fragmentShader from "../.shaders/planet/fragment.glsl";
 
-import { createOrbitalPath, getOrbitPosition } from "../orbits";
+import { createOrbitalPath, getOrbitPosition } from "./orbits";
 
-export default class Mars {
+export default class Neptune {
   /**
    * @param {number} earthRadius
    */
@@ -17,12 +17,12 @@ export default class Mars {
     this.resources = this.experience.resources;
     this.time = this.experience.time;
 
-    this.radius = earthRadius * constants.MARS_SCALE_MULTIPLIER;
-    this.distanceFromSun = earthRadius * constants.MARS_DISTANCE_MULTIPLIER;
+    this.radius = earthRadius * constants.NEPTUNE_SCALE_MULTIPLIER;
+    this.distanceFromSun = earthRadius * constants.NEPTUNE_DISTANCE_MULTIPLIER;
 
     // Orbital parameters
-    this.orbitalEccentricity = constants.MARS_ORBITAL_ECCENTRICITY;
-    this.orbitalPeriod = constants.MARS_ORBITAL_PERIOD;
+    this.orbitalEccentricity = constants.NEPTUNE_ORBITAL_ECCENTRICITY;
+    this.orbitalPeriod = constants.NEPTUNE_ORBITAL_PERIOD;
     this.orbitalSpeed = (2 * Math.PI) / this.orbitalPeriod;
     this.orbitalInclination = THREE.MathUtils.degToRad(7.0);
 
@@ -37,14 +37,14 @@ export default class Mars {
 
   setTextures() {
     this.textures = {
-      marsTexture: this.resources.items.marsTexture,
+      neptuneTexture: this.resources.items.neptuneTexture,
     };
-    if (!this.textures.marsTexture) {
-      console.warn("Missing Texture: Mars");
+    if (!this.textures.neptuneTexture) {
+      console.warn("Missing Texture: Neptune");
     }
 
-    this.textures.marsTexture.anisotropy = 8;
-    this.textures.marsTexture.colorSpace = THREE.SRGBColorSpace;
+    this.textures.neptuneTexture.anisotropy = 8;
+    this.textures.neptuneTexture.colorSpace = THREE.SRGBColorSpace;
   }
 
   setMesh() {
@@ -52,7 +52,7 @@ export default class Mars {
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
       uniforms: {
-        uTexture: new THREE.Uniform(this.textures.marsTexture),
+        uTexture: new THREE.Uniform(this.textures.neptuneTexture),
         uSunDirection: new THREE.Uniform(new THREE.Vector3(0, 0, 1)),
       },
     });

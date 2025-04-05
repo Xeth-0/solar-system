@@ -6,7 +6,7 @@ uniform vec3 uSunDirection;
 varying vec2 vUv;
 varying vec3 vNormal;
 
-#include ../includes/noise/simplex4D
+#include ../.includes/noise/simplex4D
 
 void main() {
   vec2 uv = vUv;

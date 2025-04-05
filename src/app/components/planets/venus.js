@@ -5,9 +5,9 @@ import Experience from "../../experience";
 import vertexShader from "../.shaders/planet/vertex.glsl";
 import fragmentShader from "../.shaders/planet/fragment.glsl";
 
-import { createOrbitalPath, getOrbitPosition } from "../orbits";
+import { createOrbitalPath, getOrbitPosition } from "./orbits";
 
-export default class Mercury {
+export default class Venus {
   /**
    * @param {number} earthRadius
    */
@@ -17,14 +17,14 @@ export default class Mercury {
     this.resources = this.experience.resources;
     this.time = this.experience.time;
 
-    this.radius = earthRadius * constants.MERCURY_SCALE_MULTIPLIER;
-    this.distanceFromSun = earthRadius * constants.MERCURY_DISTANCE_MULTIPLIER;
+    this.radius = earthRadius * constants.VENUS_SCALE_MULTIPLIER;
+    this.distanceFromSun = earthRadius * constants.VENUS_DISTANCE_MULTIPLIER;
 
     // Orbital parameters
-    this.orbitalEccentricity = constants.MERCURY_ORBITAL_ECCENTRICITY;
-    this.orbitalPeriod = constants.MERCURY_ORBITAL_PERIOD;
+    this.orbitalEccentricity = constants.VENUS_ORBITAL_ECCENTRICITY;
+    this.orbitalPeriod = constants.VENUS_ORBITAL_PERIOD;
     this.orbitalSpeed = (2 * Math.PI) / this.orbitalPeriod;
-    this.orbitalInclination = THREE.MathUtils.degToRad(7.0);
+    this.orbitalInclination = THREE.MathUtils.degToRad(7.25);
 
     this.semiMajorAxis = this.distanceFromSun;
     this.semiMinorAxis =
@@ -37,14 +37,13 @@ export default class Mercury {
 
   setTextures() {
     this.textures = {
-      mercuryTexture: this.resources.items.mercuryTexture,
+      venusTexture: this.resources.items.venusTexture,
     };
-    if (!this.textures.mercuryTexture) {
-      console.warn("Missing Texture: Mercury");
+    if (!this.textures.venusTexture) {
+      console.warn("Missing Texture: Venus");
     }
 
-    this.textures.mercuryTexture.anisotropy = 8;
-    this.textures.mercuryTexture.colorSpace = THREE.SRGBColorSpace;
+    this.textures.venusTexture.colorSpace = THREE.SRGBColorSpace;
   }
 
   setMesh() {
@@ -52,7 +51,7 @@ export default class Mercury {
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
       uniforms: {
-        uTexture: new THREE.Uniform(this.textures.mercuryTexture),
+        uTexture: new THREE.Uniform(this.textures.venusTexture),
         uSunDirection: new THREE.Uniform(new THREE.Vector3(0, 0, 1)),
       },
     });
@@ -61,26 +60,25 @@ export default class Mercury {
 
     this.instance = mesh;
     this.instance.scale.set(this.radius, this.radius, this.radius);
-    this.scene.add(mesh);
+    this.scene.add(this.instance);
 
-    this.orbit = createOrbitalPath(
+    this.orbitLine = createOrbitalPath(
       this.semiMajorAxis,
       this.semiMinorAxis,
       this.orbitalEccentricity
     );
-    this.scene.add(this.orbit);
+    this.scene.add(this.orbitLine);
   }
 
   update() {
     this.instance.rotation.y = this.time.elapsed * 5; 
-    
+
     const [x, z] = getOrbitPosition(
       this.time.elapsed,
       this.orbitalPeriod,
       this.orbitalEccentricity,
       this.semiMajorAxis
     );
-
     this.instance.position.set(x, 0, z);
 
     const sunDirection = new THREE.Vector3(0, 0, 0)

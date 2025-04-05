@@ -4,7 +4,7 @@ varying vec2 vUv;
 varying vec3 vNormal;
 varying vec3 vPosition;
 
-#include ../includes/noise/simplex4D
+#include ../.includes/noise/simplex4D
 
 void main() {
     // Base position

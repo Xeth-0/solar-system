@@ -5,9 +5,9 @@ import Experience from "../../experience";
 import vertexShader from "../.shaders/planet/vertex.glsl";
 import fragmentShader from "../.shaders/planet/fragment.glsl";
 
-import { createOrbitalPath, getOrbitPosition } from "../orbits";
+import { createOrbitalPath, getOrbitPosition } from "./orbits";
 
-export default class Uranus {
+export default class Mercury {
   /**
    * @param {number} earthRadius
    */
@@ -17,12 +17,12 @@ export default class Uranus {
     this.resources = this.experience.resources;
     this.time = this.experience.time;
 
-    this.radius = earthRadius * constants.URANUS_SCALE_MULTIPLIER;
-    this.distanceFromSun = earthRadius * constants.URANUS_DISTANCE_MULTIPLIER;
+    this.radius = earthRadius * constants.MERCURY_SCALE_MULTIPLIER;
+    this.distanceFromSun = earthRadius * constants.MERCURY_DISTANCE_MULTIPLIER;
 
     // Orbital parameters
-    this.orbitalEccentricity = constants.URANUS_ORBITAL_ECCENTRICITY;
-    this.orbitalPeriod = constants.URANUS_ORBITAL_PERIOD;
+    this.orbitalEccentricity = constants.MERCURY_ORBITAL_ECCENTRICITY;
+    this.orbitalPeriod = constants.MERCURY_ORBITAL_PERIOD;
     this.orbitalSpeed = (2 * Math.PI) / this.orbitalPeriod;
     this.orbitalInclination = THREE.MathUtils.degToRad(7.0);
 
@@ -37,14 +37,14 @@ export default class Uranus {
 
   setTextures() {
     this.textures = {
-      uranusTexture: this.resources.items.uranusTexture,
+      mercuryTexture: this.resources.items.mercuryTexture,
     };
-    if (!this.textures.uranusTexture) {
-      console.warn("Missing Texture: Uranus");
+    if (!this.textures.mercuryTexture) {
+      console.warn("Missing Texture: Mercury");
     }
 
-    this.textures.uranusTexture.anisotropy = 8;
-    this.textures.uranusTexture.colorSpace = THREE.SRGBColorSpace;
+    this.textures.mercuryTexture.anisotropy = 8;
+    this.textures.mercuryTexture.colorSpace = THREE.SRGBColorSpace;
   }
 
   setMesh() {
@@ -52,7 +52,7 @@ export default class Uranus {
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
       uniforms: {
-        uTexture: new THREE.Uniform(this.textures.uranusTexture),
+        uTexture: new THREE.Uniform(this.textures.mercuryTexture),
         uSunDirection: new THREE.Uniform(new THREE.Vector3(0, 0, 1)),
       },
     });
@@ -72,8 +72,8 @@ export default class Uranus {
   }
 
   update() {
-    this.instance.rotation.y = this.time.elapsed * 5;
-
+    this.instance.rotation.y = this.time.elapsed * 5; 
+    
     const [x, z] = getOrbitPosition(
       this.time.elapsed,
       this.orbitalPeriod,
