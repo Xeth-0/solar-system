@@ -1,4 +1,3 @@
-import * as THREE from "three";
 import Experience from "./experience";
 import Sun from "./components/sun/sun";
 import Earth from "./components/earth/earth";
