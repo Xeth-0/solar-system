@@ -89,33 +89,28 @@ export default class World {
   updateCameraFocus(target) {
     const camera = this.experience.camera;
     
-    switch(target) {
-      case 'sun':
-        camera.setTarget(this.sun.instance);
-        camera.setViewMode('orbit');
-        break;
-        
-      case 'earth':
-        camera.setTarget(this.earth.instance);
-        camera.setViewMode('free');
-        break;
-        
-      case 'moon':
-        if (this.earth && this.earth.moon) {
-          camera.setTarget(this.earth.moon.orbitGroup);
-          camera.setViewMode('free');
-        }
-        break;
-        
-      case 'system':
-        // View the entire system from above
-        camera.setTarget(this.sun.instance);
-        camera.setViewMode('topDown');
-        break;
-        
-      default:
-        camera.setTarget(this.sun.instance);
-        break;
+    const planetTargets = {
+      'sun': { instance: this.sun?.instance, mode: 'orbit' },
+      'mercury': { instance: this.mercury?.instance, mode: 'free' },
+      'venus': { instance: this.venus?.instance, mode: 'free' },
+      'earth': { instance: this.earth?.instance, mode: 'free' },
+      'mars': { instance: this.mars?.instance, mode: 'free' },
+      'jupiter': { instance: this.jupiter?.instance, mode: 'free' },
+      'saturn': { instance: this.saturn?.instance, mode: 'free' },
+      'uranus': { instance: this.uranus?.instance, mode: 'free' },
+      'neptune': { instance: this.neptune?.instance, mode: 'free' },
+      'system': { instance: this.sun?.instance, mode: 'topDown' }
+    };
+
+    if (target === 'moon' && this.earth?.moon) {
+      camera.setTarget(this.earth.moon.orbitGroup);
+      camera.setViewMode('free');
+    } else {
+      const targetConfig = planetTargets[target] || planetTargets['sun'];
+      if (targetConfig.instance) {
+        camera.setTarget(targetConfig.instance);
+        camera.setViewMode(targetConfig.mode);
+      }
     }
     
     // Enable camera following
@@ -129,8 +124,15 @@ export default class World {
       // Focus target selection
       const focusTargets = {
         'Sun': 'sun',
+        'Mercury': 'mercury',
+        'Venus': 'venus',
         'Earth': 'earth',
         'Moon': 'moon',
+        'Mars': 'mars',
+        'Jupiter': 'jupiter',
+        'Saturn': 'saturn',
+        'Uranus': 'uranus',
+        'Neptune': 'neptune',
         'Solar System': 'system'
       };
       

@@ -89,18 +89,12 @@ export default class Moon {
       this.semiMajorAxis
     );
 
-    // Apply orbital inclination by rotating the position around the x-axis
     this.moon.position
       .set(x, 0, z)
       .applyAxisAngle(new THREE.Vector3(1, 0, 0), this.orbitalInclination);
-    // const y = z * Math.sin(this.orbitalInclination);
-    // const zTilted = z * Math.cos(this.orbitalInclination);
-
-    // this.moon.position.set(x, y, zTilted);
   }
 
   update(earthPosition, sunDirection) {
-    // Update the moon's orbit position to follow the Earth
     this.instance.position.copy(earthPosition);
 
     this.updatePosition(this.time.elapsed);

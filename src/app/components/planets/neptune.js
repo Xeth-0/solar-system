@@ -72,7 +72,7 @@ export default class Neptune {
   }
 
   update() {
-    this.instance.rotation.y = this.time.elapsed * 5;
+    this.instance.rotation.y = constants.NEPTUNE_ROTATION_PERIOD * this.time.elapsed;
 
     const [x, z] = getOrbitPosition(
       this.time.elapsed,

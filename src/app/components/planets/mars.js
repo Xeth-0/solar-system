@@ -72,7 +72,7 @@ export default class Mars {
   }
 
   update() {
-    this.instance.rotation.y = this.time.elapsed * 5;
+    this.instance.rotation.y = this.time.elapsed * constants.MARS_ROTATION_PERIOD;
 
     const [x, z] = getOrbitPosition(
       this.time.elapsed,

@@ -79,7 +79,7 @@ export default class Camera {
         default:
           // Free view with smooth following
           const targetPos = this.target.position.clone();
-          // const cameraIdealPos = targetPos.clone().add(this.offset);
+          // const cameraIdealPos = targetPos.clone().sub(this.instance.position);
           
           // Smooth interpolation
           // this.instance.position.lerp(cameraIdealPos, this.smoothFactor);

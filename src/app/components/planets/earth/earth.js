@@ -143,7 +143,7 @@ export default class Earth {
   }
 
   update() {
-    this.earth.rotation.y = this.time.elapsed * 5;
+    this.earth.rotation.y = constants.EARTH_ROTATION_PERIOD * this.time.elapsed;
 
     const [x, z] = getOrbitPosition(
       this.time.elapsed,

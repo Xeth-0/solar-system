@@ -72,7 +72,7 @@ export default class Saturn {
   }
 
   update() {
-    this.instance.rotation.y = this.time.elapsed * 5;
+    this.instance.rotation.y = this.time.elapsed  * constants.SATURN_ROTATION_PERIOD;
 
     const [x, z] = getOrbitPosition(
       this.time.elapsed,
