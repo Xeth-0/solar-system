@@ -25,10 +25,10 @@ export default class Earth {
     this.sunDistance = constants.EARTH_DISTANCE_MULTIPLIER * this.radius;
 
     // Orbital parameters
-    this.orbitalPeriod = constants.EARTH_ORBITAL_PERIOD; 
-    this.orbitalSpeed = (2 * Math.PI) / this.orbitalPeriod; 
+    this.orbitalPeriod = constants.EARTH_ORBITAL_PERIOD;
+    this.orbitalSpeed = (2 * Math.PI) / this.orbitalPeriod;
     this.orbitalInclination = THREE.MathUtils.degToRad(23.5);
-    this.orbitalEccentricity = constants.EARTH_ORBITAL_ECCENTRICITY; 
+    this.orbitalEccentricity = constants.EARTH_ORBITAL_ECCENTRICITY;
 
     this.semiMajorAxis = this.sunDistance;
     this.semiMinorAxis =

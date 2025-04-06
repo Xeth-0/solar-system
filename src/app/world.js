@@ -24,7 +24,7 @@ export default class World {
     this.resources = this.experience.resources;
     
     // Camera focus options
-    this.focusTarget = 'earth'; // Default focus target
+    this.focusTarget = 'moon'; // Default focus target
     
     // Build the world when the resources(textures, models, ...) are ready
     this.resources.on("ready", () => {
@@ -89,7 +89,7 @@ export default class World {
   updateCameraFocus(target) {
     const camera = this.experience.camera;
     
-    const planetTargets = {
+    const planetTargets = { // modes unused for now
       'sun': { instance: this.sun?.instance, mode: 'orbit' },
       'mercury': { instance: this.mercury?.instance, mode: 'free' },
       'venus': { instance: this.venus?.instance, mode: 'free' },
@@ -103,13 +103,11 @@ export default class World {
     };
 
     if (target === 'moon' && this.earth?.moon) {
-      camera.setTarget(this.earth.moon.orbitGroup);
-      camera.setViewMode('free');
+      camera.setTarget(this.earth.moon.instance);
     } else {
       const targetConfig = planetTargets[target] || planetTargets['sun'];
       if (targetConfig.instance) {
         camera.setTarget(targetConfig.instance);
-        camera.setViewMode(targetConfig.mode);
       }
     }
     
