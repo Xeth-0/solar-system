@@ -1,13 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Earth</title>
-    <link rel="stylesheet" href="./style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A real-time model of the solar system, built with Three.js and hand-written shaders."
+    />
+    <title>Solar System</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
     <canvas class="webgl"></canvas>
-    <script type="module" src="./script.js"></script>
-</body>
+
+    <div class="markers" id="markers"></div>
+
+    <div class="ui">
+      <header class="brand">
+        <h1>Solar System</h1>
+        <p>Keplerian orbits from J2000 elements &middot; distances compressed</p>
+      </header>
+
+      <aside class="panel" id="panel" hidden></aside>
+
+      <nav class="index" id="index" aria-label="Bodies"></nav>
+
+      <footer class="transport">
+        <button class="transport__play" id="play" type="button" aria-label="Pause"></button>
+
+        <label class="transport__speed">
+          <input id="speed" type="range" min="0" max="1" step="0.001" aria-label="Simulation speed" />
+          <span class="transport__rate" id="rate"></span>
+        </label>
+
+        <span class="transport__date" id="date"></span>
+
+        <span class="transport__toggles">
+          <button class="chip is-on" id="toggle-orbits" type="button">Orbits</button>
+          <button class="chip is-on" id="toggle-labels" type="button">Labels</button>
+        </span>
+      </footer>
+    </div>
+
+    <div class="loader" id="loader">
+      <p class="loader__title">Solar System</p>
+      <div class="loader__track"><div class="loader__fill" id="loader-fill"></div></div>
+    </div>
+
+    <script type="module" src="./main.js"></script>
+  </body>
 </html>

@@ -1,21 +1,22 @@
-import EventEmitter from "./eventEmitter.js";
+import EventEmitter from "./eventEmitter";
 
 export default class Sizes extends EventEmitter {
   constructor() {
     super();
 
-    // Setup
+    this.measure();
+
+    window.addEventListener("resize", () => {
+      this.measure();
+      this.trigger("resize");
+    });
+  }
+
+  measure() {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-    this.pixelRatio = Math.min(window.devicePixelRatio, 2);
-
-    // Handle Resize event, only listened to from window.addEventListener here, the rest will respond to the event emitter.
-    window.addEventListener('resize', ()=>{
-      this.width = window.innerWidth;
-      this.height = window.innerHeight;
-      this.pixelRatio = Math.min(window.devicePixelRatio, 2);
-
-      this.trigger('resize'); // Event emitter emission.
-    })
+    // Capped at 1.5: the scene is fragment-bound, and past this the extra pixels buy
+    // almost nothing against a mostly black sky.
+    this.pixelRatio = Math.min(window.devicePixelRatio, 1.5);
   }
 }

@@ -1,146 +1,117 @@
-import Experience from "./experience";
-import Sun from "./components/sun/sun";
-import Earth from "./components/planets/earth/earth";
-import Environment from "./components/environment";
-import Mercury from "./components/planets/mercury";
-import Venus from "./components/planets/venus";
-import Mars from "./components/planets/mars";
-import Jupiter from "./components/planets/jupiter";
-import Saturn from "./components/planets/saturn";
-import Neptune from "./components/planets/neptune";
-import Uranus from "./components/planets/uranus";
+import * as THREE from "three";
 
-let instance = null;
+import Experience from "./experience";
+import Sun from "./components/sun";
+import Body from "./components/body";
+import Starfield from "./components/starfield";
+import { AU, PLANETS } from "./data/bodies";
+
+const SYSTEM_VIEW_DISTANCE = 11000;
+const DRAG_THRESHOLD = 5; // pixels of pointer travel that still counts as a click
 
 export default class World {
   constructor() {
-    if (instance){
-      return instance;
-    }
-    instance = this;
-    
     this.experience = new Experience();
     this.scene = this.experience.scene;
-    this.resources = this.experience.resources;
-    
-    // Camera focus options
-    this.focusTarget = 'moon'; // Default focus target
-    
-    // Build the world when the resources(textures, models, ...) are ready
-    this.resources.on("ready", () => {
-      console.log("Resources loaded.");
-      this.setWorld();
-      this.setDebug();
-    });
-  }
-  
-  setWorld(){
-    const earthRadius = 1;
-    
-    this.sun = new Sun(earthRadius);
 
-    this.mercury = new Mercury(earthRadius);
-    this.venus = new Venus(earthRadius);
-    this.earth = new Earth(earthRadius);
-    this.mars = new Mars(earthRadius);
-    this.jupiter = new Jupiter(earthRadius);
-    this.saturn = new Saturn(earthRadius);
-    this.uranus = new Uranus(earthRadius);
-    this.neptune = new Neptune(earthRadius);
-    this.environment = new Environment(earthRadius);
-    
-    // Set initial camera position
-    this.updateCameraFocus(this.focusTarget);
+    /** Flat, in display order, so the UI and the keyboard shortcuts can index it. */
+    this.bodies = [];
+    this.byId = {};
+    this.selected = null;
+    this.orbitsVisible = true;
+  }
+
+  build() {
+    this.starfield = new Starfield();
+    this.sun = new Sun();
+
+    this.register(this.sun);
+
+    for (const definition of PLANETS) {
+      const planet = new Body(definition, { orbitScale: AU });
+      this.register(planet);
+
+      for (const moonDefinition of definition.moons ?? []) {
+        this.register(new Body(moonDefinition, { orbitScale: planet.radius, parent: planet }));
+      }
+    }
+
+    this.update();
+    this.setPicking();
+  }
+
+  register(body) {
+    this.bodies.push(body);
+    this.byId[body.id] = body;
+  }
+
+  /** Flies the camera to a body and tells the rest of the UI about it. */
+  select(id, options) {
+    const body = this.byId[id];
+    if (!body) return;
+
+    this.selected = body;
+    this.experience.camera.lookAt(body, options);
+    this.experience.hud?.onSelect(body);
+
+    for (const other of this.bodies) {
+      if (!other.orbitLine) continue;
+      other.orbitLine.material.uniforms.uHighlight.value = other === body ? 1 : 0;
+    }
+  }
+
+  /** Pulls back far enough to hold the whole system in frame. */
+  viewSystem() {
+    this.select("sun", { distance: SYSTEM_VIEW_DISTANCE });
+  }
+
+  setOrbitsVisible(visible) {
+    this.orbitsVisible = visible;
+
+    for (const body of this.bodies) {
+      if (body.orbitLine) body.orbitLine.visible = visible;
+    }
+  }
+
+  /** Click a planet to fly to it -- as long as the pointer wasn't being dragged. */
+  setPicking() {
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    const meshes = this.bodies.map((body) => body.mesh);
+    const canvas = this.experience.canvas;
+
+    let origin = null;
+
+    canvas.addEventListener("pointerdown", (event) => {
+      origin = { x: event.clientX, y: event.clientY };
+    });
+
+    canvas.addEventListener("pointerup", (event) => {
+      if (!origin) return;
+
+      const travelled = Math.hypot(event.clientX - origin.x, event.clientY - origin.y);
+      origin = null;
+      if (travelled > DRAG_THRESHOLD) return;
+
+      pointer.x = (event.clientX / this.experience.sizes.width) * 2 - 1;
+      pointer.y = -(event.clientY / this.experience.sizes.height) * 2 + 1;
+
+      raycaster.setFromCamera(pointer, this.experience.camera.instance);
+
+      const hit = raycaster.intersectObjects(meshes, false)[0];
+      if (hit) this.select(hit.object.userData.body.id);
+    });
   }
 
   update() {
-    if (this.sun) {
-      this.sun.update();
-    }
-    if (this.mercury) {
-      this.mercury.update();
-    }
-    if (this.venus) {
-      this.venus.update();
-    }
-    if (this.earth){
-      this.earth.update();
-    }
-    if (this.mars){
-      this.mars.update()
-    }
-    if (this.jupiter){
-      this.jupiter.update()
-    }
-    if (this.saturn){
-      this.saturn.update()
-    }
-    if (this.uranus){
-      this.uranus.update()
-    }
-    if (this.neptune){
-      this.neptune.update()
-    }
-    if (this.environment) {
-      this.environment.update();
-    }
-  }
+    const { time } = this.experience;
 
-  updateCameraFocus(target) {
-    const camera = this.experience.camera;
-    
-    const planetTargets = { // modes unused for now
-      'sun': { instance: this.sun?.instance, mode: 'orbit' },
-      'mercury': { instance: this.mercury?.instance, mode: 'free' },
-      'venus': { instance: this.venus?.instance, mode: 'free' },
-      'earth': { instance: this.earth?.instance, mode: 'free' },
-      'mars': { instance: this.mars?.instance, mode: 'free' },
-      'jupiter': { instance: this.jupiter?.instance, mode: 'free' },
-      'saturn': { instance: this.saturn?.instance, mode: 'free' },
-      'uranus': { instance: this.uranus?.instance, mode: 'free' },
-      'neptune': { instance: this.neptune?.instance, mode: 'free' },
-      'system': { instance: this.sun?.instance, mode: 'topDown' }
-    };
+    this.starfield.update(time.elapsed);
+    this.sun.update(time.elapsed, time.spinDays);
 
-    if (target === 'moon' && this.earth?.moon) {
-      camera.setTarget(this.earth.moon.instance);
-    } else {
-      const targetConfig = planetTargets[target] || planetTargets['sun'];
-      if (targetConfig.instance) {
-        camera.setTarget(targetConfig.instance);
-      }
-    }
-    
-    // Enable camera following
-    camera.followTarget = true;
-  }
-
-  setDebug() {
-    if (this.experience.debug && this.experience.debug.active) {
-      const worldFolder = this.experience.debug.ui.addFolder('World Settings');
-      
-      // Focus target selection
-      const focusTargets = {
-        'Sun': 'sun',
-        'Mercury': 'mercury',
-        'Venus': 'venus',
-        'Earth': 'earth',
-        'Moon': 'moon',
-        'Mars': 'mars',
-        'Jupiter': 'jupiter',
-        'Saturn': 'saturn',
-        'Uranus': 'uranus',
-        'Neptune': 'neptune',
-        'Solar System': 'system'
-      };
-      
-      worldFolder
-        .add({ focusTarget: this.focusTarget }, 'focusTarget', Object.keys(focusTargets))
-        .name('Focus On')
-        .onChange((value) => {
-          this.focusTarget = focusTargets[value];
-          this.updateCameraFocus(this.focusTarget);
-        });
+    // Parents update before their moons, which the flat list already guarantees.
+    for (const body of this.bodies) {
+      if (body !== this.sun) body.update(time.days, time.spinDays);
     }
   }
 }
